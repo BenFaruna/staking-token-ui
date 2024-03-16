@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import StakingPoolAbi from "./stakingPoolAbi.json";
 import TokenAbi from "./tokenAbi.json";
+import MultiCallAbi from "./multicallAbi.json";
 
 export const getStakingPoolContract = (providerOrSigner: ethers.ContractRunner) => {
     return new ethers.Contract(
@@ -23,5 +24,13 @@ export const getRewardTokenContract = (providerOrSigner: ethers.ContractRunner) 
         import.meta.env.VITE_reward_contract_address,
         TokenAbi,
         providerOrSigner
+    )
+}
+
+export const getMultiCallContract = (provider: ethers.ContractRunner) => {
+    return new ethers.Contract(
+        import.meta.env.VITE_multicall_address,
+        MultiCallAbi,
+        provider
     )
 }
