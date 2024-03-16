@@ -13,7 +13,7 @@ const useStakeToken = () => {
     const [stakeLoading, setLoading] = useState<boolean>(false);
 
 
-    const stake = useCallback(async (poolId: string, amount: string) => {
+    const stake = useCallback(async (poolId: number | string, amount: string) => {
         if (amount === "") return console.error("Amount is required");
         setLoading(true);
 

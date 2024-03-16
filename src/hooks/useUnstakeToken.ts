@@ -10,7 +10,7 @@ const useUnstakeToken = () => {
     const { walletProvider } = useWeb3ModalProvider();
     const [unstakeLoading, setLoading] = useState<boolean>(false);
 
-    const unstake = useCallback(async (id: string, amount: string) => {
+    const unstake = useCallback(async (id: number | string, amount: string) => {
         if (amount !== "") return toast.error("Amount is not required");
         setLoading(true);
 

@@ -3,24 +3,25 @@ import { toast } from "react-toastify";
 import { ethers } from "ethers";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { getReadOnlyProvider } from "../constants/providers";
-import { getTokenContract } from "../constants/contracts";
-// import useGetLatestBlock from "./useGetLatestBlock";
+import { getStakeTokenContract, getRewardTokenContract } from "../constants/contracts";
+
 
 const useGetUserTokenBalance = (newBlock: Number | undefined) => {
-    const [balance, setBalance] = useState<string>("0")
+    const [stakeBalance, setStakeBalance] = useState<string>("0")
+    const [rewardBalance, setRewardBalance] = useState<string>("0")
     const { address } = useWeb3ModalAccount()
-    // const newBlock = useGetLatestBlock()
 
     useEffect(() => {
         if (typeof address === "undefined") {
-            setBalance("0")
+            setStakeBalance("0")
+            setRewardBalance("0")
             return
         }
 
-        const contract = getTokenContract(getReadOnlyProvider)
+        const contract = getStakeTokenContract(getReadOnlyProvider)
         contract.balanceOf(address)
             .then((res) => {
-                setBalance(ethers.formatUnits(res, 18))
+                setStakeBalance(ethers.formatUnits(res, 18))
             })
             .catch((err) => {
                 toast("Could not fetch balance", { type: "error" })
@@ -28,7 +29,16 @@ const useGetUserTokenBalance = (newBlock: Number | undefined) => {
             })
     }, [address, newBlock])
 
-    return balance
+    const contract = getRewardTokenContract(getReadOnlyProvider)
+    contract.balanceOf(address)
+        .then((res) => {
+            setRewardBalance(ethers.formatUnits(res, 18))
+        })
+        .catch((err) => {
+            toast("Could not fetch balance", { type: "error" })
+            console.error("Error:", err)
+        })
+    return { stakeBalance, rewardBalance }
 }
 
 export default useGetUserTokenBalance;

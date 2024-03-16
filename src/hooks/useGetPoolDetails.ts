@@ -3,20 +3,18 @@ import { getReadOnlyProvider } from "../constants/providers";
 import { getMultiCallContract, getStakingPoolContract } from "../constants/contracts";
 import { decodeStakingPoolResult, encodeStakingPoolCall } from "../utils/callEncoder";
 import { ContractMethodArgs } from "ethers/contract";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import useGetNumberOfPools from "./useGetNumberOfPools";
+import useEventListener from "./useEventListener";
 
-type PoolDetails = {
-    isLoading: boolean;
-    data: string[][];
-};
 
 const useGetPoolDetails = () => {
-    const { address } = useWeb3ModalAccount();
-    const totalPools = useGetNumberOfPools();
-    const [poolDetails, setPoolDetails] = useState<PoolDetails>({ isLoading: true, data: [] });
+    const [poolLoading, setPoolLoading] = useState(true);
+    const [poolDetails, setPoolDetails] = useState<Array<Array<string>>>([]);
     const multicallContract = getMultiCallContract(getReadOnlyProvider);
     const stakingPoolContract = getStakingPoolContract(getReadOnlyProvider);
+    const totalPools = useGetNumberOfPools();
+
+    const event = useEventListener()
 
     const fetchPoolDetails = async () => {
         try {
@@ -31,25 +29,27 @@ const useGetPoolDetails = () => {
                 }
 
                 const response = await multicallContract.tryAggregate.staticCall(false, calls);
-                console.log(response)
+                // console.log(response)
                 const decodedResponse = response.map((res: any[]) => decodeStakingPoolResult("getPoolByID", res[1]));
-                const result: Array<Array<string>> = decodedResponse.map((res) => res.toString().split(","));
+                const result: Array<Array<string>> = decodedResponse.map((res: { toString: () => string; }) => res.toString().split(","));
 
-                setPoolDetails({ isLoading: false, data: result });
+                setPoolDetails(result);
+                setPoolLoading(false)
             } else {
-                setPoolDetails({ isLoading: false, data: [] });
+                setPoolDetails([]);
             }
         } catch (error) {
             console.error("Error fetching pool details:", error);
-            setPoolDetails({ isLoading: false, data: [] });
+            setPoolDetails([]);
         }
     };
 
     useEffect(() => {
         fetchPoolDetails()
-    }, [totalPools]);
+        console.log(poolDetails)
+    }, [totalPools, event]);
 
-    return poolDetails;
+    return { poolLoading, poolDetails };
 };
 
 export default useGetPoolDetails;
