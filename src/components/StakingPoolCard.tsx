@@ -4,21 +4,21 @@ import { useState } from "react";
 // import useGetUserTokenBalance from "../hooks/useGetUserTokenBalance";
 // import useGetUserStakedAmount from "../hooks/useGetUserStakedAmount";
 // import useGetTotalRewards from "../hooks/useGetTotalRewards";
-// import useStakeToken from "../hooks/useStakeToken";
-// import useUnstakeToken from "../hooks/useUnstakeToken";
+import useStakeToken from "../hooks/useStakeToken";
+import useUnstakeToken from "../hooks/useUnstakeToken";
 
 // import { accrualPercentage, rewardsCalculation } from "../utils/rewardsCalculation";
 // import useGetLatestBlock from "../hooks/useGetLatestBlock";
 
 
-const StakingPoolCard = () => {
+const StakingPoolCard = ({ id }) => {
     // const newBlock = useGetLatestBlock();
     // const balance = useGetUserTokenBalance(newBlock);
     // const stakedBalance = useGetUserStakedAmount(newBlock);
     // const totalRewards = useGetTotalRewards(newBlock);
-    // const [amount, setAmount] = useState<string>("");
-    // const { stake, stakeLoading } = useStakeToken();
-    // const { unstake, unstakeLoading } = useUnstakeToken();
+    const [amount, setAmount] = useState<string>("");
+    const { stake, stakeLoading } = useStakeToken();
+    const { unstake, unstakeLoading } = useUnstakeToken();
     const [totalStaked, setTotalStaked] = useState("");
     const [totalStakers, setTotalStakers] = useState("");
     const [rewardReserve, setRewardReserve] = useState("");
@@ -38,8 +38,8 @@ const StakingPoolCard = () => {
             <TextField.Input
                 size="3"
                 placeholder="Amount to stake..."
-            // value={amount}
-            // onChange={(e) => setAmount(e.target.value)}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
             // disabled={stakeLoading}
             />
 
@@ -72,18 +72,25 @@ const StakingPoolCard = () => {
 
             <Flex justify={"between"} className="mt-5">
                 <Button
-                // disabled={stakeLoading || unstakeLoading}
-                // onClick={async () => {
-                //     await stake(amount)
-                //     setAmount("")
-                // }}
+                    disabled={stakeLoading || unstakeLoading}
+                    onClick={async () => {
+                        await stake(id, amount)
+                        setAmount("")
+                    }}
                 >Stake</Button>
                 <Button
-                // disabled={stakeLoading || unstakeLoading}
-                // onClick={async () => {
-                //     await unstake(amount)
-                //     setAmount("")
-                // }}
+                    disabled={stakeLoading || unstakeLoading}
+                    onClick={async () => {
+                        await unstake(id, amount)
+                        setAmount("")
+                    }}
+                >Claim Rewards</Button>
+                <Button
+                    disabled={stakeLoading || unstakeLoading}
+                    onClick={async () => {
+                        await unstake(id, amount)
+                        setAmount("")
+                    }}
                 >Unstake</Button>
             </Flex>
         </Card>

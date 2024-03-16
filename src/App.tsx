@@ -6,7 +6,6 @@ import CreatePool from "./components/CreatePool";
 import { configureWeb3Modal } from "./connections";
 import StakingPoolCard from "./components/StakingPoolCard";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
-import useGetPoolDetails from "./hooks/useGetPoolDetails";
 
 
 configureWeb3Modal()
@@ -14,9 +13,6 @@ configureWeb3Modal()
 function App() {
 
   const { isConnected } = useWeb3ModalAccount();
-  const { isLoading, data: poolDetails } = useGetPoolDetails();
-
-  console.log(isLoading, poolDetails)
 
   return (
     <Container>
@@ -26,15 +22,15 @@ function App() {
           {isConnected && <CreatePool />}
         </Flex>
 
-        <Grid columns="4" gap="3" width="auto">
-          <StakingPoolCard />
-          <StakingPoolCard />
-          <StakingPoolCard />
-          <StakingPoolCard />
-          <StakingPoolCard />
-          <StakingPoolCard />
-          <StakingPoolCard />
-          <StakingPoolCard />
+        <Grid columns="3" gap="3" width="auto">
+          <StakingPoolCard id={"0"} />
+          <StakingPoolCard id={"1"} />
+          <StakingPoolCard id={"2"} />
+          {/* <StakingPoolCard id={1} />
+          <StakingPoolCard id={1} />
+          <StakingPoolCard id={1} />
+          <StakingPoolCard id={1} />
+          <StakingPoolCard id={1} /> */}
         </Grid>
       </Box>
     </Container>
