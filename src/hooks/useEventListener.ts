@@ -23,7 +23,9 @@ const useEventListener = () => {
                 setEvent(e.transactionHash);
             })
         })();
-        return () => provider.off(filter, (e) => console.log("off", e))
+        return () => {
+            provider.off(filter, (e) => console.log("off", e))
+        }
     }, []);
 
     return event;

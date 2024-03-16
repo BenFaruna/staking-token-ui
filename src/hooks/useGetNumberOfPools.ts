@@ -15,9 +15,7 @@ const useGetNumberOfPools = () => {
                 console.error("Error fetching total pools:", error);
             }
         };
-
         fetchTotalPools();
-
     }, []);
 
     return totalPools;

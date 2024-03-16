@@ -1,6 +1,6 @@
 import { useWeb3ModalProvider } from "@web3modal/ethers/react";
 import { useCallback, useState } from "react";
-import { toast } from "react-toastify";
+import { Id, toast } from "react-toastify";
 
 import { getStakingPoolContract } from "../constants/contracts";
 import { getReadWriteProvider } from "../constants/providers";
@@ -13,6 +13,8 @@ const useUnstakeToken = () => {
     const unstake = useCallback(async (id: number | string, amount: string) => {
         if (amount !== "") return toast.error("Amount is not required");
         setLoading(true);
+
+        let toastId: Id = toast.loading("Unstaking...")
 
         try {
             const provider = getReadWriteProvider(walletProvider);
@@ -30,6 +32,7 @@ const useUnstakeToken = () => {
             toast.error("Could not unstake");
             console.error(err);
         } finally {
+            toast.dismiss(toastId)
             setLoading(false);
         }
     },

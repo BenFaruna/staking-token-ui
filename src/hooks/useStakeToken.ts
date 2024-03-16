@@ -1,7 +1,7 @@
 import { useWeb3ModalProvider } from "@web3modal/ethers/react";
 import { parseEther } from "ethers";
 import { useCallback, useState } from "react"
-import { toast } from "react-toastify";
+import { Id, toast } from "react-toastify";
 
 
 import { getStakingPoolContract, getStakeTokenContract } from "../constants/contracts";
@@ -16,6 +16,8 @@ const useStakeToken = () => {
     const stake = useCallback(async (poolId: number | string, amount: string) => {
         if (amount === "") return console.error("Amount is required");
         setLoading(true);
+
+        let toastId: Id = toast.loading("Staking...");
 
         try {
             const provider = getReadWriteProvider(walletProvider);
@@ -38,6 +40,7 @@ const useStakeToken = () => {
             toast.error("Could not stake", { type: "error" });
             console.error(err);
         } finally {
+            toast.dismiss(toastId)
             setLoading(false);
         }
     },
