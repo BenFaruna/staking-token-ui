@@ -6,11 +6,11 @@ import { getStakingPoolContract } from "../constants/contracts";
 import { getReadWriteProvider } from "../constants/providers";
 
 
-const useUnstakeToken = () => {
+const useClaimReward = () => {
     const { walletProvider } = useWeb3ModalProvider();
-    const [unstakeLoading, setLoading] = useState<boolean>(false);
+    const [claimRewardLoading, setLoading] = useState<boolean>(false);
 
-    const unstake = useCallback(async (id: string, amount: string) => {
+    const claimReward = useCallback(async (id: string, amount: string) => {
         if (amount !== "") return toast.error("Amount is not required");
         setLoading(true);
 
@@ -21,21 +21,21 @@ const useUnstakeToken = () => {
             const stakingContract = getStakingPoolContract(signer);
 
             // unstake the token
-            const unstakeTx = await stakingContract.unstake(id);
-            const receipt = await unstakeTx.wait();
+            const claimTx = await stakingContract.claimReward(id);
+            const receipt = await claimTx.wait();
             toast.success("Unstaked successfully");
 
             console.log(receipt);
         } catch (err) {
             toast.error("Could not unstake");
-            console.error(err);
+            console.dir(err)
         } finally {
             setLoading(false);
         }
     },
         [walletProvider]);
 
-    return { unstake, unstakeLoading }
+    return { claimReward, claimRewardLoading }
 }
 
-export default useUnstakeToken
+export default useClaimReward

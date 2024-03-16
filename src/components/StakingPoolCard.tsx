@@ -6,12 +6,13 @@ import { useState } from "react";
 // import useGetTotalRewards from "../hooks/useGetTotalRewards";
 import useStakeToken from "../hooks/useStakeToken";
 import useUnstakeToken from "../hooks/useUnstakeToken";
+import useClaimReward from "../hooks/useClaimReward";
 
 // import { accrualPercentage, rewardsCalculation } from "../utils/rewardsCalculation";
 // import useGetLatestBlock from "../hooks/useGetLatestBlock";
 
 
-const StakingPoolCard = ({ id }) => {
+const StakingPoolCard = ({ id }: { id: string; }) => {
     // const newBlock = useGetLatestBlock();
     // const balance = useGetUserTokenBalance(newBlock);
     // const stakedBalance = useGetUserStakedAmount(newBlock);
@@ -19,10 +20,11 @@ const StakingPoolCard = ({ id }) => {
     const [amount, setAmount] = useState<string>("");
     const { stake, stakeLoading } = useStakeToken();
     const { unstake, unstakeLoading } = useUnstakeToken();
-    const [totalStaked, setTotalStaked] = useState("");
-    const [totalStakers, setTotalStakers] = useState("");
-    const [rewardReserve, setRewardReserve] = useState("");
-    const [rewardRate, setRewardRate] = useState("");
+    const { claimReward, claimRewardLoading } = useClaimReward();
+    // const [totalStaked, setTotalStaked] = useState("");
+    // const [totalStakers, setTotalStakers] = useState("");
+    // const [rewardReserve, setRewardReserve] = useState("");
+    // const [rewardRate, setRewardRate] = useState("");
 
     // try {
     //     setTotalStakers(result[0])
@@ -40,7 +42,7 @@ const StakingPoolCard = ({ id }) => {
                 placeholder="Amount to stake..."
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-            // disabled={stakeLoading}
+                disabled={stakeLoading}
             />
 
             <Text as="div" className="my-5">
@@ -72,21 +74,21 @@ const StakingPoolCard = ({ id }) => {
 
             <Flex justify={"between"} className="mt-5">
                 <Button
-                    disabled={stakeLoading || unstakeLoading}
+                    disabled={stakeLoading || unstakeLoading || claimRewardLoading}
                     onClick={async () => {
                         await stake(id, amount)
                         setAmount("")
                     }}
                 >Stake</Button>
                 <Button
-                    disabled={stakeLoading || unstakeLoading}
+                    disabled={stakeLoading || unstakeLoading || claimRewardLoading}
                     onClick={async () => {
-                        await unstake(id, amount)
+                        await claimReward(id, amount)
                         setAmount("")
                     }}
                 >Claim Rewards</Button>
                 <Button
-                    disabled={stakeLoading || unstakeLoading}
+                    disabled={stakeLoading || unstakeLoading || claimRewardLoading}
                     onClick={async () => {
                         await unstake(id, amount)
                         setAmount("")
